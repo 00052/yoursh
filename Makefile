@@ -12,7 +12,7 @@ CFLAGS += '-DISSUE_FILE="/etc/issue.net"' -DPARANOID_TTYS \
 	   -DLOGIN_WRAPPER=\"/bin/sh\" \
 	   -D_GNU_SOURCE
 
-OBJS = telnetd.o state.o termstat.o sys_term.o utility.o \
+OBJS = telnetd.o state.o termstat.o systerm.o utility.o \
 	global.o
 
 
