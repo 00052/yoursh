@@ -293,8 +293,8 @@ fatal(int f, const char *msg)
 {
 	char buf[BUFSIZ];
 
-	(void) snprintf(buf, sizeof(buf), "telnetd: %s.\r\n", msg);
-	(void) write(f, buf, (int)strlen(buf));
+	snprintf(buf, sizeof(buf), "telnetd: %s.\r\n", msg);
+	(void)write(f, buf, (int)strlen(buf));
 	sleep(1);	/*XXX*/
 	exit(1);
 }
@@ -578,7 +578,7 @@ netwrite(void *cookie, const char *buf, size_t len)
 		const char *p;
 		size_t l;
 
-		p = nextitem(buf, end, 0, 0);
+		p = nextitem(buf, end, NULL, NULL);
 		ltrailing = !p;
 		if (ltrailing) {
 			p = end;

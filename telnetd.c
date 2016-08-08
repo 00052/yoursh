@@ -225,6 +225,7 @@ usage(void)
 	fprintf(stderr, " [-p port]");
 	fprintf(stderr, " [-L login_program]");
 	fprintf(stderr, " [-n]");
+	fprintf(stderr, " [-h]");
 	fprintf(stderr, "\n");
 	exit(1);
 }
