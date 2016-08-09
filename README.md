@@ -4,20 +4,22 @@ A telnet server that is simplified from netkit-telnetd, the authentication and o
 
 The function that reverse connection was added.
 
-USAGE:
+#USAGE:
+
 	yoursh [-l port | -r host:port] [-L program] [-n] [-h]
-	
 	-l port		Bind the <port> and listen, default port 80. (default option)
 	-r		Reverse connect to the <port> of speciafied <host>, it is essential to make port forwarding.
 	-L program	Login program, default '/bin/sh'.
 	-n		Keep connection alive.
 	-h		Help
 
-BUILD:
-	Type `make` to build.
-	There is a file *yoursh* is released.
+#BUILD:
 
-EXAMPLE:
+Type `make` to build.
+There is a file *yoursh* is released.
+
+#EXAMPLE:
+
 	$ yoursh -l 10023 -n
 	##listen to port 10023 and keep alive.
 
