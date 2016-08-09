@@ -21,9 +21,10 @@ There is a file *yoursh* is released.
 ###EXAMPLE:
 
 	$ yoursh -l 10023 -n
-	##listen to port 10023 and keep alive.
+	## listen to port 10023 and keep alive.
 
-	$ yoursh -r example.com:9998 
-	##run `socat tcp4-listen:9998 tcp4-listen:9999` in your VPS, the port 9999 is telnet service port now.
+	$ yoursh -r 123.123.123.123:9998 
+	## run `socat tcp4-listen:9998 tcp4-listen:9999` in host 123.123.123.123, 
+	## the port 9999 is telnet service port now.
 
 
