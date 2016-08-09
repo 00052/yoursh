@@ -99,7 +99,7 @@ nextaddr:
 			fatalperror(2, "socket");
 		}
 		if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) {
-			fatalperror(2, "setsockopt failed");
+			fatalperror(2, "setsockopt");
 		}
 		if (bind(s, addr->ai_addr, addr->ai_addrlen)) {
 #ifdef linux
@@ -108,13 +108,13 @@ nextaddr:
 				goto nextaddr;
 			}
 #endif
-			fatalperror(2, "bind failed");
+			fatalperror(2, "bind");
 		}
 		if (listen(s, 1)) {
-			fatalperror(2, "listen failed");
+			fatalperror(2, "listen");
 		}
 		if (fcntl(s, F_SETFL, O_NONBLOCK)) {
-			fatalperror(2, "fcntl error");
+			fatalperror(2, "fcntl");
 		}
 
 		fdp->fd = s;
@@ -155,6 +155,51 @@ out:
 		close(fdp->fd);
 	}
 	free(fds);
+}
+
+static void 
+reverse_connect(char *address) {
+	struct sockaddr_in client_addr;
+	char * hostname;
+	unsigned short port;
+	int i;
+	for(i=0; address[i] && address[i] != ':'; i++) 
+		;
+	if(address[i] == '\0' || address[i+1] == '\0') {
+		fatal(2,"invalid address for r");
+	}
+	port = atoi(address + i + 1);
+	if(port == 0) {
+		fatal(2,"invalid port value for r");
+	}
+	address[i] = '\0';
+	hostname = address;
+	bzero(&client_addr,sizeof(client_addr)); 
+	client_addr.sin_family = AF_INET;    
+	client_addr.sin_addr.s_addr = htons(INADDR_ANY);
+	client_addr.sin_port = htons(0);    
+	int client_socket = socket(AF_INET,SOCK_STREAM,0);
+
+	if( client_socket < 0)
+		fatalperror(2,"socket");
+	if( bind(client_socket,(struct sockaddr*)&client_addr,sizeof(client_addr)))
+		fatalperror(2,"bind");
+
+	struct sockaddr_in server_addr;
+	bzero(&server_addr,sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+
+	if(inet_aton("127.0.0.1",&server_addr.sin_addr) == 0) 
+		fatalperror(2,"inet_aton");
+	server_addr.sin_port = htons(10000);
+	socklen_t server_addr_length = sizeof(server_addr);
+
+	if(connect(client_socket,(struct sockaddr*)&server_addr, server_addr_length) < 0)
+		fatalperror(2,"connect");
+	dup2(client_socket,0);
+	close(client_socket);
+	return 0;
+	
 }
 
 int
@@ -211,10 +256,12 @@ main(int argc, char *argv[], char *env[])
 	} else {
 		if(reverse_addr) { /* -r */
 			printf("Reverse connect: %s\n",reverse_addr);
-			exit(0);
+			reverse_connect(reverse_addr);
 		} else
 			wait_for_connection(listen_port); /* neither -l -r */
 	}
+
+
 	fromlen = sizeof (from);
 	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
 		fatalperror(2, "getpeername");

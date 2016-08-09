@@ -293,7 +293,7 @@ fatal(int f, const char *msg)
 {
 	char buf[BUFSIZ];
 
-	snprintf(buf, sizeof(buf), "telnetd: %s.\r\n", msg);
+	snprintf(buf, sizeof(buf), "yoursh: %s.\r\n", msg);
 	(void)write(f, buf, (int)strlen(buf));
 	sleep(1);	/*XXX*/
 	exit(1);

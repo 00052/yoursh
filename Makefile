@@ -1,4 +1,4 @@
-all: hissh
+all: yoursh
 CC=gcc
 CXX=g++
 CFLAGS=-O2 -Wall -Wno-trigraphs 
@@ -16,11 +16,11 @@ OBJS = telnetd.o state.o termstat.o systerm.o utility.o \
 	global.o
 
 
-hissh: $(OBJS)
+yoursh: $(OBJS)
 	$(CC) -g $(LDFLAGS) $^ $(LIBS) -o $@
 
 $(OBJS): defs.h ext.h telnetd.h
 
 clean:
-	rm -f *.o hissh
+	rm -f *.o yoursh
 
