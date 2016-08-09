@@ -1,5 +1,5 @@
-His Shell
-=========
+Your Shell
+==========
 A telnet server that is simplified from netkit-telnetd, the authentication and other useless module are removed.
 
 The function that reverse connection was added.
