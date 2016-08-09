@@ -18,6 +18,8 @@
 #define HAS_IPPROTO_IP
 #endif
 
+#define DEFAULT_LISTEN "23"
+
 static void doit(struct sockaddr *who, socklen_t who_len);
 static int terminaltypeok(const char *s);
 
@@ -162,8 +164,9 @@ main(int argc, char *argv[], char *env[])
 	int on = 1;
 	socklen_t fromlen;
 	register int ch;
-	char* port = "23";
-
+	int listening = 0;
+	char* listen_port = DEFAULT_LISTEN;
+	char* reverse_addr = NULL;
 #if	defined(HAS_IPPROTO_IP) && defined(IP_TOS)
 	int tos = -1;
 #endif
@@ -173,10 +176,14 @@ main(int argc, char *argv[], char *env[])
 	pfrontp = pbackp = ptyobuf;
 	netip = netibuf;
 
-	while ((ch = getopt(argc, argv, "p:L:n:h")) != EOF) {
+	while ((ch = getopt(argc, argv, "r:l:L:n:h")) != EOF) {
 		switch(ch) {
-		case 'p':
-			port = optarg;
+		case 'l':
+			listening = 1;
+			listen_port = strdup(optarg);
+			break;
+		case 'r':
+			reverse_addr = strdup(optarg);
 			break;
 		case 'L':
 			loginprg = strdup(optarg);
@@ -184,15 +191,30 @@ main(int argc, char *argv[], char *env[])
 		case 'n':
 			keepalive = 0;
 			break;
-		default:
-			fprintf(stderr, "telnetd: %c: unknown option\n", ch);
 		case 'h':
 			usage();
+			exit(0);
+		default:
+			fprintf(stderr, "telnetd: %c: unknown option\n", ch);
+		case '?':
+			usage();
+			exit(1);
 		}
 	}
 
-
-	wait_for_connection(port);
+	if(listening) {
+		if(reverse_addr) {  /* -l -r*/
+			fprintf(stderr,"telnetd: unexpect option -r\n");
+			exit(1);
+		} 
+		wait_for_connection(listen_port); /* -l */
+	} else {
+		if(reverse_addr) { /* -r */
+			printf("Reverse connect: %s\n",reverse_addr);
+			exit(0);
+		} else
+			wait_for_connection(listen_port); /* neither -l -r */
+	}
 	fromlen = sizeof (from);
 	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
 		fatalperror(2, "getpeername");
@@ -221,13 +243,7 @@ main(int argc, char *argv[], char *env[])
 void
 usage(void)
 {
-	fprintf(stderr, "Usage: telnetd");
-	fprintf(stderr, " [-p port]");
-	fprintf(stderr, " [-L login_program]");
-	fprintf(stderr, " [-n]");
-	fprintf(stderr, " [-h]");
-	fprintf(stderr, "\n");
-	exit(1);
+	fprintf(stderr, "Usage: telnetd [-l port | -r host:port] [-L program] [-n] [-h]\n");
 }
 
 /*
