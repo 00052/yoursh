@@ -166,19 +166,23 @@ reverse_connect(char *address) {
 	int i;
 	for(i=0; address[i] && address[i] != ':'; i++) 
 		;
+
 	if(address[i] == '\0' || address[i+1] == '\0') {
 		fatal(2,"invalid address for r");
 	}
+
 	port = atoi(address + i + 1);
 	if(port == 0) {
 		fatal(2,"invalid port value for r");
 	}
+
 	address[i] = '\0';
 	hostname = address;
 	bzero(&client_addr,sizeof(client_addr)); 
 	client_addr.sin_family = AF_INET;    
 	client_addr.sin_addr.s_addr = htons(INADDR_ANY);
 	client_addr.sin_port = htons(0);    
+
 	int client_socket = socket(AF_INET,SOCK_STREAM,0);
 
 	if( client_socket < 0)
@@ -190,8 +194,10 @@ reverse_connect(char *address) {
 	bzero(&server_addr,sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	phost = gethostbyname(hostname);
+
 	if(phost == NULL) 
 		fatalperror(2,"gethostbyname");
+
 	bcopy( (char *)phost->h_addr, (char *)&server_addr.sin_addr, phost->h_length );
 	//if(inet_aton(hostname,&server_addr.sin_addr) == 0) 
 	//	fatalperror(2,"inet_aton");
@@ -202,7 +208,7 @@ reverse_connect(char *address) {
 		fatalperror(2,"connect");
 	dup2(client_socket,0);
 	close(client_socket);
-	return 0;
+	return;
 	
 }
 
@@ -293,7 +299,7 @@ main(int argc, char *argv[], char *env[])
 void
 usage(void)
 {
-	fprintf(stderr, "Usage: telnetd [-l port | -r host:port] [-L program] [-n] [-h]\n");
+	fprintf(stderr, "Usage: yoursh [-l port | -r host:port] [-L program] [-n] [-h]\n");
 }
 
 /*

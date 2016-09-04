@@ -613,14 +613,13 @@ static void addarg(struct argv_stuff *avs, const char *val) {
  */
 void cleanup(int sig) {
     int stat = 0;
-    const char *p;
-
+	
     if (sig == SIGCHLD) {
 	if (waitpid(-1, &stat, WNOHANG) > 0)
 	    stat = WEXITSTATUS(stat);
     }
 
-    p = line + sizeof("/dev/") - 1;
+	//p = line + sizeof("/dev/") - 1;
     shutdown(net, 2);
     exit(stat);
 }

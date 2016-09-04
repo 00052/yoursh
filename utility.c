@@ -107,8 +107,8 @@ void 	ptyflush(void)
 static
 const char *
 nextitem(
-	const unsigned char *current, const unsigned char *end,
-	const unsigned char *next, const unsigned char *nextend
+	const char *current, const char *end,
+	const char *next, const char *nextend
 ) {
 	if (*current++ != IAC) {
 		while (current < end && *current++ != IAC)
@@ -125,7 +125,7 @@ nextitem(
 		next = 0;
 	}
 
-	switch (*current++) {
+	switch ((unsigned char)*current++) {
 	case DO:
 	case DONT:
 	case WILL:
@@ -162,7 +162,7 @@ iac:
 	}
 
 out:
-	return next ? next + (current - end) : current;
+	return (next ? next + (current - end) : current);
 }  /* end of nextitem */
 
 

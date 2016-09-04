@@ -1,6 +1,5 @@
 all: yoursh
 CC=gcc
-CXX=g++
 CFLAGS=-O2 -Wall -Wno-trigraphs 
 LDFLAGS=
 LIBS=-lutil

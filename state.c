@@ -841,7 +841,7 @@ void suboption(void) {
     }  /* end of case TELOPT_XDISPLOC */
 
     case TELOPT_ENVIRON: {
-	register int c, is_uservar = 0;
+	register int c;
 	register char *cp, *varp, *valp;
 
 	if (SB_EOF())
@@ -861,7 +861,7 @@ void suboption(void) {
 	if (SB_EOF())
 		return;
 
-	is_uservar = (c == ENV_USERVAR) ? 1 : 0;
+	///is_uservar = (c == ENV_USERVAR) ? 1 : 0;
 
 	cp = varp = (char *)subpointer;
 	valp = 0;
@@ -877,16 +877,12 @@ void suboption(void) {
 	    case ENV_VAR:
 		*cp = '\0';
 		if (envvarok(varp)
-#ifdef ACCEPT_USERVAR
-		    || is_uservar
-#endif
 		   ) {
 		    if (valp)
 			(void)setenv(varp, valp, 1);
 		    else
 			unsetenv(varp);
 		}
-		is_uservar = (c == ENV_USERVAR) ? 1 : 0;
 		cp = varp = (char *)subpointer;
 		valp = 0;
 		break;
@@ -898,15 +894,12 @@ void suboption(void) {
 		/* FALL THROUGH */
 	    default:
 	        /* I think this test is correct... */
-		if (cp < subbuffer+sizeof(subbuffer)-1) *cp++ = c;
+		if ((unsigned long)cp < (unsigned long)subbuffer+sizeof(subbuffer)-1) *cp++ = c;
 		break;
 	    }
 	}
 	*cp = '\0';
 	if (envvarok(varp)
-#ifdef ACCEPT_USERVAR
-	    || is_uservar
-#endif
 	   ) {
 	    if (valp)
 		(void)setenv(varp, valp, 1);
