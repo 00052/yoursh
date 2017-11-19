@@ -1,7 +1,7 @@
 Your Shell
 ==========
-从 netkit-telnetd 项目简化出的一个telnet服务端，身份认证等功能已经从源码中移除
-额外添加了反弹链接功能
+从 netkit-telnetd 项目简化出的一个精简telnet服务端，身份认证等功能已经从源码中移除，并额外添加了反弹链接功能
+
 # 使用方法
 
 	yoursh [-l port | -r host:port] [-L program] [-n] [-h]
