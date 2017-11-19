@@ -1,10 +1,8 @@
 Your Shell
 ==========
-A telnet server that is simplified from netkit-telnetd, the authentication and other useless module are removed.
-
-The function that reverse connection was added.
-
-###USAGE:
+从 netkit-telnetd 项目简化出的一个telnet服务端，身份认证等功能已经从源码中移除
+额外添加了反弹链接功能
+# 使用方法
 
 	yoursh [-l port | -r host:port] [-L program] [-n] [-h]
 	-l port     Bind the <port> and listen, default port 80. (default option)
@@ -13,18 +11,17 @@ The function that reverse connection was added.
 	-n          Keep connection alive.
 	-h          Help
 
-###BUILD:
+# 构建
 
-Type `make` to build.
-There is a file *yoursh* is released.
+使用 `make` 命令构建
 
-###EXAMPLE:
+# 用例
 
 	$ yoursh -l 10023 -n
-	## listen to port 10023 and keep alive.
+	## 监听 10023 端口并开启续命
 
 	$ yoursh -r 123.123.123.123:9998 
-	## run `socat tcp4-listen:9998 tcp4-listen:9999` in host 123.123.123.123, 
-	## the port 9999 is telnet service port now.
+	## 运行 `socat tcp4-listen:9998 tcp4-listen:9999` 在主机 123.123.123.123, 
+	## 9999端口是 telnet 服务端接入端口
 
 
